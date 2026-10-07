@@ -4,9 +4,9 @@ Terminal Tetris where you play against an AI that adapts its level to yours.
 
 ![Gameplay: the player on the left, the AI on the right](docs/images/gameplay.png)
 
-*The player (left) and the AI (right) each play on their own grid.*
-
 <!-- demo GIF -->
+
+*The player (left) and the AI (right) each play on their own grid.*
 
 ## Overview
 
@@ -62,12 +62,6 @@ A high gap means the player's grid is in worse shape than the AI's. The `choose_
 
 The AI plays its best when it is not ahead of the player. It plays randomly when it is slightly ahead, and it deliberately plays badly when it is far ahead.
 
-### Why not Minimax?
-
-The state of the art of the TIPE covered Minimax and Alpha-Beta pruning. Those algorithms suit games where each player's move changes the position the other player faces.
-
-That is not the case here. Each player has their own grid, and the opponent never acts on the AI's position. The problem reduces to a search for a single player, so the code uses neither Minimax nor Alpha-Beta pruning.
-
 ## Results
 
 ![Grid rating of the player and the AI during one game](docs/images/score-evolution.png)
@@ -93,7 +87,7 @@ cd tetris-ai
 uv run tetris
 ```
 
-The terminal size is read once at startup. Open a large and wide window before launching the game. The next pieces are drawn on row 35, so the window needs at least 38 rows.
+The terminal size is read once at startup. Open a large window before launching the game. The next pieces are drawn on row 35, so the window needs at least 38 rows.
 
 ## Controls
 
@@ -131,7 +125,7 @@ tetris-ai/
 └── LICENSE
 ```
 
-At the end of a game, [game.py](src/tetris_ai/game.py) prints the grid ratings recorded after each placed piece. [analysis/create_graph.py](analysis/create_graph.py) contains the TIPE data and the matplotlib code of the graph, written for Spyder. The values are copied in the script, and its labels are in French. matplotlib is not a dependency of the project.
+At the end of a game, [game.py](src/tetris_ai/game.py) prints the grid ratings recorded after each placed piece. [analysis/create_graph.py](analysis/create_graph.py) plots such data. The values it contains are copied in the script, and its labels are in French. matplotlib is not a dependency of the project.
 
 ## Known limitations
 
