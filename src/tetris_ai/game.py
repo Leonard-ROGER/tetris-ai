@@ -264,9 +264,7 @@ def main():
                     player_block,coord_player_block= player_next_blocks.pop(0)
                 
                     player_next_blocks.append(core.block_apparition())
-                
-                    player_score = core.add_score(player_score,nb_deleted_lines,speed)
-                
+
                     bot_rate = bot.grid_rate(bot_grid)
                     player_rate = bot.grid_rate(player_grid)
 
@@ -304,9 +302,7 @@ def main():
                     bot_block,coord_bot_block= bot_next_blocks.pop(0)
                 
                     bot_next_blocks.append(core.block_apparition())
-                
-                    bot_score = core.add_score(bot_score,nb_deleted_lines_bot,speed)
-                
+
                     bot_following_block,bot_following_block_coord=bot_next_blocks[0]
                 
                     wanted_bot_block,wanted_bot_block_coord = bot.give_wanted_block_and_coord(player_grid,bot_grid,bot_block,bot_following_block)
