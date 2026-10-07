@@ -85,7 +85,7 @@ cd tetris-ai
 uv run tetris
 ```
 
-The terminal size is read once at startup. Open a large window before launching the game. The next pieces are drawn on row 35, so the window needs at least 38 rows.
+The terminal size is read once at startup. Open a large and wide window before launching the game. The next pieces are drawn on row 35, so the window needs at least 38 rows.
 
 ## Controls
 
@@ -100,9 +100,13 @@ Left, right and up act once per key press. Holding the key does not repeat the a
 
 The pieces fall every 0.5 s at the start. Every 15 s, the delay is multiplied by 0.93. The down arrow divides the delay by 10 while it is held.
 
+## End of the game
+
+When a player can no longer make a piece appear, that player stops and the other one keeps playing. The game ends when both are blocked, and the player with the best score wins.
+
 ## Scoring
 
-Clearing 1, 2, 3 or 4 lines with one piece adds 100, 300, 500 or 800 points respectively, multiplied by `2 / speed`, where `speed` is the current delay between two descents in seconds (see `add_score` in [core.py](src/tetris_ai/core.py)).
+Clearing 1, 2, 3 or 4 lines with one piece adds 100, 300, 500 or 800 points respectively, multiplied by `2 / speed`, where `speed` is the delay between two descents, in seconds, at the moment the piece is placed (see `add_score` in [core.py](src/tetris_ai/core.py)). The fast drop counts: holding the down arrow divides the delay by 10, so it multiplies the points by 10. The displayed score is rounded to an integer.
 
 ## Project structure
 
@@ -116,22 +120,23 @@ tetris-ai/
 │       ├── core.py        Game rules: grid, pieces, collisions, rotation, line clearing, scoring
 │       └── renderer.py    Terminal rendering: draws a character image and prints it
 ├── analysis/
-│   └── create_graph.py    Plots the data recorded during the TIPE (requires matplotlib)
+│   └── create_graph.py    Plots the data recorded during the TIPE (`analysis` group)
 ├── docs/
 │   └── images/            Images used in this README
 ├── pyproject.toml         Project metadata and the `tetris` command
 └── LICENSE
 ```
 
-At the end of a game, [game.py](src/tetris_ai/game.py) prints the grid ratings recorded after each placed piece. [analysis/create_graph.py](analysis/create_graph.py) plots such data. The values it contains are copied in the script, and its labels are in French. matplotlib is not a dependency of the project.
+At the end of a game, [game.py](src/tetris_ai/game.py) prints the grid ratings recorded after each placed piece. [analysis/create_graph.py](analysis/create_graph.py) plots such data. The values it contains are copied in the script. matplotlib is not needed to play: it is only installed with the `analysis` dependency group. To plot the graph:
+
+```
+uv run --group analysis python analysis/create_graph.py
+```
 
 ## Known limitations
 
 - Windows only.
-- The texts of the game are in French.
-- The end of the game does not always trigger.
-- The speed can stay 10 times faster if the down arrow is held at the moment of the speed increase (every 15 s).
-- The score of completed lines is counted twice.
+- The fast drop is shared by both grids: holding the down arrow also speeds up the AI's piece and multiplies its points.
 
 ## Future work
 
