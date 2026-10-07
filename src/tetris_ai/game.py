@@ -1,9 +1,9 @@
-import renderer as renderer
+from . import renderer
 import time
 import keyboard
 import random
-import main_bot as b
-import function_stock as fs
+from . import bot as b
+from . import core as fs
 
 #Initialisation of all the textures and tetrominos shapes
 #Moreover tetrominos will be named blocks after in the code
@@ -133,216 +133,218 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
                     renderer.placerPixel(m+j+renderer.terminal_length//2,i+35,texture[2])
 
 
-#Main variables initialisation
+def main():
+    """Run the game: set up both grids, then loop until the game ends."""
+    #Main variables initialisation
 
-length,height=12,21
+    length,height=12,21
 
-player_grid = fs.create_grid(length,height)
-player_block,coord_player_block= fs.block_apparition()
-player_next_blocks = [fs.block_apparition() for _ in range(10)]
-player_score = 0
+    player_grid = fs.create_grid(length,height)
+    player_block,coord_player_block= fs.block_apparition()
+    player_next_blocks = [fs.block_apparition() for _ in range(10)]
+    player_score = 0
 
-bot_grid = fs.create_grid(length,height)
-bot_block,coord_bot_block= fs.block_apparition()
-bot_next_blocks = [fs.block_apparition() for _ in range(10)]
-bot_score = 0
+    bot_grid = fs.create_grid(length,height)
+    bot_block,coord_bot_block= fs.block_apparition()
+    bot_next_blocks = [fs.block_apparition() for _ in range(10)]
+    bot_score = 0
 
-bot_following_block,bot_following_block_coord=bot_next_blocks[0]
-wanted_bot_block,wanted_bot_block_coord = b.give_wanted_block_and_coord(player_grid,bot_grid,bot_block,bot_following_block)
-
-
-
-temps_initial = time.time() #give hour
-time_from_previous_speed_increase = time.time()
-speed = 0.5
-speed_buffer = 0.5
+    bot_following_block,bot_following_block_coord=bot_next_blocks[0]
+    wanted_bot_block,wanted_bot_block_coord = b.give_wanted_block_and_coord(player_grid,bot_grid,bot_block,bot_following_block)
 
 
-result_bot_grid = []
-result_player_grid = []
-resultat_gap_rate= []
 
-bot_rate = b.grid_rate(bot_grid)
-player_rate = b.grid_rate(player_grid)
-
-result_bot_grid.append(bot_rate)
-result_player_grid.append(player_rate)
-resultat_gap_rate.append(player_rate - bot_rate)
+    temps_initial = time.time() #give hour
+    time_from_previous_speed_increase = time.time()
+    speed = 0.5
+    speed_buffer = 0.5
 
 
-#Main loop
+    result_bot_grid = []
+    result_player_grid = []
+    resultat_gap_rate= []
 
-hold = False #To know if a key is hold
-bot_hold= False
+    bot_rate = b.grid_rate(bot_grid)
+    player_rate = b.grid_rate(player_grid)
 
-while True:
-    renderer.supprimer()
+    result_bot_grid.append(bot_rate)
+    result_player_grid.append(player_rate)
+    resultat_gap_rate.append(player_rate - bot_rate)
+
+
+    #Main loop
+
+    hold = False #To know if a key is hold
+    bot_hold= False
+
+    while True:
+        renderer.supprimer()
     
-    '''
-    Manages speed augmentation
-    '''
-    if time.time()-time_from_previous_speed_increase>=15.0:
-        speed=speed*0.93
-        speed_buffer = speed
-        time_from_previous_speed_increase = time.time()
+        '''
+        Manages speed augmentation
+        '''
+        if time.time()-time_from_previous_speed_increase>=15.0:
+            speed=speed*0.93
+            speed_buffer = speed
+            time_from_previous_speed_increase = time.time()
     
-    '''
-    Manages player movements 
-    '''
-    yb,xb=coord_bot_block
-    yp,xp=coord_player_block
-    if keyboard.is_pressed("up"):
-        if not hold:
-            player_block = fs.rotation(player_grid,player_block,coord_player_block)
-        hold = True
+        '''
+        Manages player movements 
+        '''
+        yb,xb=coord_bot_block
+        yp,xp=coord_player_block
+        if keyboard.is_pressed("up"):
+            if not hold:
+                player_block = fs.rotation(player_grid,player_block,coord_player_block)
+            hold = True
 
-    elif keyboard.is_pressed("left"):
+        elif keyboard.is_pressed("left"):
         
-        if not hold and not fs.collision(player_grid,player_block,(yp,xp-1)):
-            coord_player_block = yp,xp-1
-        hold = True
+            if not hold and not fs.collision(player_grid,player_block,(yp,xp-1)):
+                coord_player_block = yp,xp-1
+            hold = True
 
-    elif keyboard.is_pressed("right"):
+        elif keyboard.is_pressed("right"):
         
-        if not hold and not fs.collision(player_grid,player_block,(yp,xp+1)):
-            coord_player_block = yp,xp+1
-        hold = True
+            if not hold and not fs.collision(player_grid,player_block,(yp,xp+1)):
+                coord_player_block = yp,xp+1
+            hold = True
 
-    else:
-        hold = False
-
-    if keyboard.is_pressed("down"):
-        speed = speed_buffer*0.1
-    else:
-        speed = speed_buffer
-    
-    '''
-    Manages bot movement
-    '''
-    wanted_yb,wanted_xb=wanted_bot_block_coord
-    if bot_block != wanted_bot_block:
-        if not bot_hold:
-            bot_block = fs.rotation(bot_grid,bot_block,coord_bot_block)
-        #bot_hold = True
-
-    elif xb>wanted_xb:
-        if not bot_hold and not fs.collision(bot_grid,bot_block,(yb,xb-1)):
-            coord_bot_block = yb,xb-1
-        #bot_hold = True
-
-    elif xb<wanted_xb:
-        
-        if not bot_hold and not fs.collision(bot_grid,bot_block,(yb,xb+1)):
-            coord_bot_block = yb,xb+1
-        #bot_hold = True
-
-    else:
-        bot_hold = False
-    
-    '''
-    Manages moving blocks' descent and scores 
-    '''
-    if time.time()-temps_initial>=speed:
-        # Executed all the "speed" secondes
-        
-        
-        #if there is a collision in player's grid
-        
-        if fs.collision(player_grid,player_block,(yp+1,xp)):
-            
-            #if player can't play
-            if yp == 0:
-                if player_score < bot_score: 
-                    print("perdu !")
-                    break
-                if fs.collision(bot_grid,bot_block,(yp+1,xp)):
-                    if yp == 0:
-                        if player_score == bot_score:
-                            print("tie !")
-                            break
-                        if player_score < bot_score:
-                            print("défaite !")
-                else:
-                    coord_bot_block=yb+1,xb
-                    temps_initial = time.time()
-            
-            
-            #else (if the player can play but there is a collision in his grid)
-            else:
-                fs.put_moving_block_in_grid(player_grid,player_block,coord_player_block)
-                nb_deleted_lines = fs.detect_and_delete_lines(player_grid)
-                player_score = fs.add_score(player_score,nb_deleted_lines,speed) 
-                
-                player_block,coord_player_block= player_next_blocks.pop(0)
-                
-                player_next_blocks.append(fs.block_apparition())
-                
-                player_score = fs.add_score(player_score,nb_deleted_lines,speed)
-                
-                bot_rate = b.grid_rate(bot_grid)
-                player_rate = b.grid_rate(player_grid)
-
-                result_bot_grid.append(bot_rate)
-                result_player_grid.append(player_rate)
-                resultat_gap_rate.append(player_rate - bot_rate)
-                
-                
-                
-        #if there is a collision in bot's grid
-        elif fs.collision(bot_grid,bot_block,(yb+1,xb)):
-            
-            #if bot can't play
-            if yb == 0:
-                if player_score > bot_score:
-                    print("victoire !")
-                    break
-                if fs.collision(player_grid,player_block,(yp+1,xp)):
-                    if yp == 0:
-                        if player_score == bot_score:
-                            print("tie !")
-                            break
-                        if player_score < bot_score:
-                            print("défaite !")
-                else:
-                    coord_player_block=yp+1,xp
-                    temps_initial = time.time()
-            
-            #else (if the bot can play but there is a collision in it grid)
-            else:
-                fs.put_moving_block_in_grid(bot_grid,bot_block,coord_bot_block)
-                nb_deleted_lines_bot = fs.detect_and_delete_lines(bot_grid)
-                bot_score = fs.add_score(bot_score,nb_deleted_lines_bot,speed) 
-                
-                bot_block,coord_bot_block= bot_next_blocks.pop(0)
-                
-                bot_next_blocks.append(fs.block_apparition())
-                
-                bot_score = fs.add_score(bot_score,nb_deleted_lines_bot,speed)
-                
-                bot_following_block,bot_following_block_coord=bot_next_blocks[0]
-                
-                wanted_bot_block,wanted_bot_block_coord = b.give_wanted_block_and_coord(player_grid,bot_grid,bot_block,bot_following_block)
-                
-                bot_rate = b.grid_rate(bot_grid)
-                player_rate = b.grid_rate(player_grid)
-
-                result_bot_grid.append(bot_rate)
-                result_player_grid.append(player_rate)
-                resultat_gap_rate.append(player_rate - bot_rate)
-                
-
-        
-        #Else (if both can play without collision)
         else:
-            coord_player_block=yp+1,xp
-            coord_bot_block=yb+1,xb
-            temps_initial = time.time()
-           
-    draw_in_terminal(length,height,player_grid,player_block,coord_player_block,player_next_blocks,player_score,bot_grid,bot_block,coord_bot_block,bot_next_blocks,bot_score)
-    renderer.afficher()
+            hold = False
 
-print("bot result", result_bot_grid)
-print("player result", result_player_grid)
-print("gap_result", resultat_gap_rate)
-input()
-exit()
+        if keyboard.is_pressed("down"):
+            speed = speed_buffer*0.1
+        else:
+            speed = speed_buffer
+    
+        '''
+        Manages bot movement
+        '''
+        wanted_yb,wanted_xb=wanted_bot_block_coord
+        if bot_block != wanted_bot_block:
+            if not bot_hold:
+                bot_block = fs.rotation(bot_grid,bot_block,coord_bot_block)
+            #bot_hold = True
+
+        elif xb>wanted_xb:
+            if not bot_hold and not fs.collision(bot_grid,bot_block,(yb,xb-1)):
+                coord_bot_block = yb,xb-1
+            #bot_hold = True
+
+        elif xb<wanted_xb:
+        
+            if not bot_hold and not fs.collision(bot_grid,bot_block,(yb,xb+1)):
+                coord_bot_block = yb,xb+1
+            #bot_hold = True
+
+        else:
+            bot_hold = False
+    
+        '''
+        Manages moving blocks' descent and scores 
+        '''
+        if time.time()-temps_initial>=speed:
+            # Executed all the "speed" secondes
+        
+        
+            #if there is a collision in player's grid
+        
+            if fs.collision(player_grid,player_block,(yp+1,xp)):
+            
+                #if player can't play
+                if yp == 0:
+                    if player_score < bot_score: 
+                        print("perdu !")
+                        break
+                    if fs.collision(bot_grid,bot_block,(yp+1,xp)):
+                        if yp == 0:
+                            if player_score == bot_score:
+                                print("tie !")
+                                break
+                            if player_score < bot_score:
+                                print("défaite !")
+                    else:
+                        coord_bot_block=yb+1,xb
+                        temps_initial = time.time()
+            
+            
+                #else (if the player can play but there is a collision in his grid)
+                else:
+                    fs.put_moving_block_in_grid(player_grid,player_block,coord_player_block)
+                    nb_deleted_lines = fs.detect_and_delete_lines(player_grid)
+                    player_score = fs.add_score(player_score,nb_deleted_lines,speed) 
+                
+                    player_block,coord_player_block= player_next_blocks.pop(0)
+                
+                    player_next_blocks.append(fs.block_apparition())
+                
+                    player_score = fs.add_score(player_score,nb_deleted_lines,speed)
+                
+                    bot_rate = b.grid_rate(bot_grid)
+                    player_rate = b.grid_rate(player_grid)
+
+                    result_bot_grid.append(bot_rate)
+                    result_player_grid.append(player_rate)
+                    resultat_gap_rate.append(player_rate - bot_rate)
+                
+                
+                
+            #if there is a collision in bot's grid
+            elif fs.collision(bot_grid,bot_block,(yb+1,xb)):
+            
+                #if bot can't play
+                if yb == 0:
+                    if player_score > bot_score:
+                        print("victoire !")
+                        break
+                    if fs.collision(player_grid,player_block,(yp+1,xp)):
+                        if yp == 0:
+                            if player_score == bot_score:
+                                print("tie !")
+                                break
+                            if player_score < bot_score:
+                                print("défaite !")
+                    else:
+                        coord_player_block=yp+1,xp
+                        temps_initial = time.time()
+            
+                #else (if the bot can play but there is a collision in it grid)
+                else:
+                    fs.put_moving_block_in_grid(bot_grid,bot_block,coord_bot_block)
+                    nb_deleted_lines_bot = fs.detect_and_delete_lines(bot_grid)
+                    bot_score = fs.add_score(bot_score,nb_deleted_lines_bot,speed) 
+                
+                    bot_block,coord_bot_block= bot_next_blocks.pop(0)
+                
+                    bot_next_blocks.append(fs.block_apparition())
+                
+                    bot_score = fs.add_score(bot_score,nb_deleted_lines_bot,speed)
+                
+                    bot_following_block,bot_following_block_coord=bot_next_blocks[0]
+                
+                    wanted_bot_block,wanted_bot_block_coord = b.give_wanted_block_and_coord(player_grid,bot_grid,bot_block,bot_following_block)
+                
+                    bot_rate = b.grid_rate(bot_grid)
+                    player_rate = b.grid_rate(player_grid)
+
+                    result_bot_grid.append(bot_rate)
+                    result_player_grid.append(player_rate)
+                    resultat_gap_rate.append(player_rate - bot_rate)
+                
+
+        
+            #Else (if both can play without collision)
+            else:
+                coord_player_block=yp+1,xp
+                coord_bot_block=yb+1,xb
+                temps_initial = time.time()
+           
+        draw_in_terminal(length,height,player_grid,player_block,coord_player_block,player_next_blocks,player_score,bot_grid,bot_block,coord_bot_block,bot_next_blocks,bot_score)
+        renderer.afficher()
+
+    print("bot result", result_bot_grid)
+    print("player result", result_player_grid)
+    print("gap_result", resultat_gap_rate)
+    input()
+    exit()

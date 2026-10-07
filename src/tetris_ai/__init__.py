@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from tetris-ai!")
+"""Terminal Tetris with an AI opponent."""

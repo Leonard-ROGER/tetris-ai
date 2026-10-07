@@ -1,4 +1,4 @@
-import function_stock as fs
+from . import core as fs
 import copy
 from random import randint 
 

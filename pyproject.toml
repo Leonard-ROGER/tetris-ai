@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-tetris-ai = "tetris_ai:main"
+tetris = "tetris_ai.game:main"
 
 [build-system]
 requires = ["uv_build>=0.12.23,<0.13.0"]
