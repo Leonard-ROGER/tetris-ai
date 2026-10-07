@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
+"""Plot the grid ratings recorded during one game of the TIPE (2024)."""
 
 import matplotlib.pyplot as plt 
 
@@ -15,15 +11,15 @@ player_result=[0, 0, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 11, 11, 11, 11, 12, 
 bot_result=[0, 6, 6, 6, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 10, 10, 8, 8, 12, 12, 10, 10, 10, 10, 10, 10, 13, 13, 14, 14, 16, 16, 16, 16, 18, 18, 18, 18, 18, 14, 14, 14, 14, 10, 10, 16, 16, 16, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16, 16, 16, 16, 16, 16, 8, 8, 8, 10, 10, 12, 12, 12, 12, 12, 14, 14, 15, 15, 15, 18, 18, 18, 18, 20, 20, 16, 16, 16, 16, 16, 18, 18, 22, 22, 19, 19, 19, 19, 19, 19, 19, 16, 16, 12, 12, 12, 12, 12, 10, 10, 8, 8, 8, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 12, 12, 12, 10, 10, 16, 16, 16, 14, 14, 14, 14, 14, 14, 17, 17, 17, 17, 17, 17, 17, 21, 21, 21, 21, 21, 21, 21, 21, 21, 30, 30, 30, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 35, 40, 43, 47, 52, 59]
 l_tps = [i for i in range(len(bot_result))]
 
-plt.plot(l_tps,bot_result,label= 'Ordinateur')
-plt.plot(l_tps,player_result,label='Joueur')
+plt.plot(l_tps,bot_result,label= 'AI')
+plt.plot(l_tps,player_result,label='Player')
 #plt.plot(l_tps,gap,label='Gap')
-plt.xlabel('Nombre de blocs placés')
-plt.ylabel('Notes des grilles')
-plt.title("Représentation de l'évolution des notes des grilles au cours du temps")
+plt.xlabel('Pieces placed (both boards)')
+plt.ylabel('Grid rating')
+plt.title("Evolution of the grid ratings over time")
 
 plt.legend()
 
-plt.Figure()
+plt.show()
 
  
