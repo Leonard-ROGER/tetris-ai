@@ -2,9 +2,7 @@
 
 Terminal Tetris where you play against an AI that adapts its level to yours.
 
-![Gameplay: the player on the left, the AI on the right](docs/images/gameplay.png)
-
-<!-- demo GIF -->
+![Demo](docs/images/demo.gif)
 
 *The player (left) and the AI (right) each play on their own grid.*
 
