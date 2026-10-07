@@ -1,7 +1,7 @@
 [project]
 name = "tetris-ai"
 version = "0.1.0"
-description = "Add your description here"
+description = "Terminal Tetris with an adaptive AI opponent"
 readme = "README.md"
 authors = [
     { name = "Léonard Roger", email = "123603890+Leonard-ROGER@users.noreply.github.com" }
