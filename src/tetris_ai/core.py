@@ -31,9 +31,17 @@ tetrominos = [[[0,0,0,0],
 #Auxiliary functions
 
 def create_grid(length,height):
-    '''
-    Create a size asked grid.
-    '''
+    """
+    Create an empty grid surrounded by walls (left, right and bottom).
+
+    Args:
+        length: Number of columns, walls included.
+        height: Number of rows, floor included.
+
+    Returns:
+        A list of `height` rows of `length` cells: 0 for an empty cell,
+        texture[1] for a wall.
+    """
     grid = [[0 for _ in range(length)] for _ in range(height)]
     for i in range(height):
         for j in range(length):
@@ -43,16 +51,29 @@ def create_grid(length,height):
     return grid
 
 def block_apparition():
-    '''
-    return all the varibles needed to a new block apparition
-    '''
+    """
+    Pick a random tetromino and its spawn position.
+
+    Returns:
+        A tuple (block, (y, x)): the tetromino matrix and the coordinates of
+        its top-left corner, on the first row and horizontally centered.
+    """
     new_block = random.choice(tetrominos)
     coord_of_apparition = (0,(length - len(new_block[0]))//2)
     return new_block,coord_of_apparition
 
 def collision(grid,block,coord_block):
     """
-    Check if there are collisions between the moving block, the grid and all the former block placed in the grid.
+    Check if the block overlaps a wall or a block already placed in the grid.
+
+    Args:
+        grid: The game grid.
+        block: The tetromino matrix.
+        coord_block: (y, x) coordinates of the block's top-left corner.
+
+    Returns:
+        True if at least one filled cell of the block is on a non-empty cell
+        of the grid, False otherwise.
     """
     y,x=coord_block
     for i in range(len(block)):
@@ -63,7 +84,17 @@ def collision(grid,block,coord_block):
 
 def collision_for_bot(grid,block,coord_block):
     """
-    Check if there are collisions between the moving block, the grid and all the former block placed in the grid.
+    Same as collision, but cells beyond the right edge of the grid are ignored
+    instead of being read (used by the bot to test every column).
+
+    Args:
+        grid: The game grid.
+        block: The tetromino matrix.
+        coord_block: (y, x) coordinates of the block's top-left corner.
+
+    Returns:
+        True if a filled cell of the block is on a non-empty cell inside the
+        grid, False otherwise.
     """
     y,x=coord_block
     for i in range(len(block)):
@@ -73,9 +104,17 @@ def collision_for_bot(grid,block,coord_block):
     return False
 
 def rotation(grid,block,coord_block):
-    '''
-    Rotate the moving block if there is no collision
-    '''
+    """
+    Rotate the block by 90 degrees if the result does not collide.
+
+    Args:
+        grid: The game grid.
+        block: The tetromino matrix to rotate.
+        coord_block: (y, x) coordinates of the block's top-left corner.
+
+    Returns:
+        The rotated matrix, or the original block if the rotation collides.
+    """
     size=len(block)
     rotated = [[0 for _ in range(size)] for _ in range(size)]
     for i in range(size):
@@ -88,9 +127,14 @@ def rotation(grid,block,coord_block):
         return rotated
 
 def put_moving_block_in_grid(grid,block,coord_block):
-    '''
-    Place the moving block in the grid
-    '''
+    """
+    Write the block into the grid, modifying the grid in place.
+
+    Args:
+        grid: The game grid (modified in place).
+        block: The tetromino matrix.
+        coord_block: (y, x) coordinates of the block's top-left corner.
+    """
     y,x=coord_block
     size=len(block)
     for i in range(size):
@@ -100,26 +144,43 @@ def put_moving_block_in_grid(grid,block,coord_block):
 
 def detect_and_delete_lines(grid):
     """
-    Detect and delete complete lines from the grid. Count how many lines that have been deleted.
+    Delete every complete line and insert an empty line at the top for each.
+
+    Args:
+        grid: The game grid (modified in place).
+
+    Returns:
+        The number of lines deleted.
     """
-    n=0
-    end_check=True
-    while end_check:
-        end_check=False
+    deleted_lines_count=0
+    line_found=True
+    while line_found:
+        line_found=False
         for i in range(height-1):
-            bool=True
+            is_full_line=True
             for j in range(length):
                 if grid[i][j] == 0:
-                    bool = False
-            if bool:
-                end_check=True
-                n+=1
+                    is_full_line = False
+            if is_full_line:
+                line_found=True
+                deleted_lines_count+=1
                 del grid[i]
                 grid.insert(0,[texture[1]]+[0]*(length-2)+[texture[1]])
-    return n
+    return deleted_lines_count
 
 def add_score(score,nb_lines_deleted,speed):
-    '''Modify the score of a player'''
+    """
+    Compute a player's new score after a block is placed.
+
+    Args:
+        score: The current score.
+        nb_lines_deleted: Number of lines cleared by the block (0 to 4).
+        speed: Current delay between two descents, in seconds. The faster
+            the game, the more points a line is worth.
+
+    Returns:
+        The updated score (unchanged if no line was cleared).
+    """
     if nb_lines_deleted == 1:
         return score+100*(1/speed*2)
     elif nb_lines_deleted == 2:

@@ -10,10 +10,16 @@ image = [[' ' for _ in range(terminal_length)] for _ in range(terminal_height)]
 terminal_height -=1
 
 
-def placerPixel(x, y, char):
-    '''
-    Place a specific type of character on the image at a position (x,y)
-    '''
+def place_pixel(x, y, char):
+    """
+    Place a character on the image at position (x, y).
+    Positions outside the terminal are ignored.
+
+    Args:
+        x: Column (converted to int).
+        y: Row (converted to int).
+        char: The character to draw.
+    """
     x1 = int(x)
     y1 = int(y)
     
@@ -22,21 +28,21 @@ def placerPixel(x, y, char):
 
 
 
-def afficher():
-    '''
-    Print the image on the terminal
-    '''
-    strImage = ''
+def display():
+    """
+    Print the whole image in the terminal, without a final line break.
+    """
+    image_str = ''
     for y in range(terminal_height):
         for x in range(terminal_length):
-            strImage += image[y][x]
-    print(strImage, end='') #The " end='' " avoids a line break
+            image_str += image[y][x]
+    print(image_str, end='') #The " end='' " avoids a line break
 
 
-def supprimer():
-    '''
-    Clear the terminal
-    '''
+def clear():
+    """
+    Reset every pixel of the image to a space.
+    """
     for y in range(terminal_height):
         for x in range(terminal_length):
             image[y][x] = ' '
