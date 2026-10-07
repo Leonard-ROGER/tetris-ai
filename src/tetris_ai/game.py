@@ -170,8 +170,7 @@ def main():
         Manages speed augmentation
         '''
         if time.time()-time_from_previous_speed_increase>=15.0:
-            speed=speed*0.93
-            speed_buffer = speed
+            speed_buffer *= 0.93
             time_from_previous_speed_increase = time.time()
     
         '''
