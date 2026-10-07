@@ -32,12 +32,12 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
 
      
     #Player score
-    player_score_str = 'Score joueur 1 : '
+    player_score_str = 'Player score : '
     for i in range(len(player_score_str)):    
         renderer.place_pixel(12+i,3,player_score_str[i])
-    str_player_score = str(player_score)
+    str_player_score = str(round(player_score))
     for i in range(len(str_player_score)):    
-        renderer.place_pixel(29+i,3,str_player_score[i])
+        renderer.place_pixel(12+len(player_score_str)+i,3,str_player_score[i])
     
     x_offset_player = 15
     y_offset_player = 5
@@ -99,13 +99,13 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
 
     
     #bot score
-    bot_score_str = 'Score ordinateur : '
+    bot_score_str = 'AI score : '
     for i in range(len(bot_score_str)):    
         renderer.place_pixel(renderer.terminal_length//2+i,3,bot_score_str[i])
     
-    str_bot_score = str(bot_score)
+    str_bot_score = str(round(bot_score))
     for i in range(len(str_bot_score)):    
-        renderer.place_pixel(renderer.terminal_length//2+19+i,3,str_bot_score[i])
+        renderer.place_pixel(renderer.terminal_length//2+len(bot_score_str)+i,3,str_bot_score[i])
     
     #Bot next blocks display
     next_x=5
