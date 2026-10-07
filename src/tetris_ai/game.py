@@ -1,36 +1,8 @@
 from . import renderer
 import time
 import keyboard
-import random
 from . import bot as b
 from . import core as fs
-
-#Initialisation of all the textures and tetrominos shapes
-#Moreover tetrominos will be named blocks after in the code
-
-texture = " %x"
-
-tetrominos = [[[0,0,0,0],
-               [1,1,1,1],
-               [0,0,0,0],
-               [0,0,0,0]], #the I
-              [[1,1,1], 
-               [0,0,1],
-               [0,0,0]], #the J
-              [[1,1,1],
-               [1,0,0],
-               [0,0,0]], #the L
-              [[1, 1],
-               [1, 1]], #the O
-              [[0, 1, 1],
-               [1, 1, 0],
-               [0, 0, 0]], #the S
-              [[1, 1, 1],
-               [0, 1, 0],
-               [0, 0, 0]], #the T
-              [[1, 1, 0],
-               [0, 1, 1],
-               [0, 0, 0]]] #the Z
 
 #Auxiliary functions
 
@@ -72,7 +44,7 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
         for j in range(len(player_block[i])):
             l+=1
             if player_block[i][j] == 1:
-                renderer.placerPixel(l+j+x_player_block+x_serif_player,i+y_player_block+y_serif_player,texture[2])
+                renderer.placerPixel(l+j+x_player_block+x_serif_player,i+y_player_block+y_serif_player,fs.texture[2])
     
     
     
@@ -86,7 +58,7 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
             for j in range(len(x_player_next_block[i])):
                 l+=1
                 if x_player_next_block[i][j] == 1:
-                    renderer.placerPixel(m+j,i+35,texture[2])
+                    renderer.placerPixel(m+j,i+35,fs.texture[2])
 
     
         
@@ -109,7 +81,7 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
         for j in range(len(block_bot[i])):
             l+=1
             if block_bot[i][j] == 1:
-                renderer.placerPixel(l+j+x_block_bot+x_serif_bot,i+y_block_bot+y_serif_bot,texture[2])
+                renderer.placerPixel(l+j+x_block_bot+x_serif_bot,i+y_block_bot+y_serif_bot,fs.texture[2])
 
     
     #bot score
@@ -130,14 +102,14 @@ def draw_in_terminal(length,height,player_grid,player_block,coord_player_block,p
             for j in range(len(x_bot_next_block[i])):
                 
                 if x_bot_next_block[i][j] == 1:
-                    renderer.placerPixel(m+j+renderer.terminal_length//2,i+35,texture[2])
+                    renderer.placerPixel(m+j+renderer.terminal_length//2,i+35,fs.texture[2])
 
 
 def main():
     """Run the game: set up both grids, then loop until the game ends."""
     #Main variables initialisation
 
-    length,height=12,21
+    length,height=fs.length,fs.height
 
     player_grid = fs.create_grid(length,height)
     player_block,coord_player_block= fs.block_apparition()
